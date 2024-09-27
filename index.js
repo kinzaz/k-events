@@ -1,4 +1,4 @@
-import { eventsMap } from "./maps";
+import { anyMap, eventsMap } from "./maps";
 function assertListener(listener) {
   if (typeof listener !== "function") {
     throw new TypeError("listener must be a function");
@@ -24,8 +24,9 @@ function getListeners(instance, eventName) {
 }
 
 export default class KEvents {
-  constructor(options = {}) {
+  constructor() {
     eventsMap.set(this, new Map());
+    anyMap.set(this, new Set());
   }
 
   on(eventNames, listener) {
@@ -52,12 +53,20 @@ export default class KEvents {
     assertEventName(eventName);
 
     const listeners = getListeners(this, eventName) ?? new Set();
+    const anyListeners = anyMap.get(this);
+
     const staticListeners = [...listeners];
+    const staticAnyListeners = [...anyListeners];
 
     await Promise.all([
       ...staticListeners.map((listener) => {
         if (listeners.has(listener)) {
           return listener(eventData);
+        }
+      }),
+      ...staticAnyListeners.map((listener) => {
+        if (anyListeners.has(listener)) {
+          return listener(eventName, eventData);
         }
       }),
     ]);
@@ -67,11 +76,19 @@ export default class KEvents {
     assertEventName(eventName);
 
     const listeners = getListeners(this, eventName) ?? new Set();
+    const anyListeners = anyMap.get(this);
     const staticListeners = [...listeners];
+    const staticAnyListeners = [...anyListeners];
 
     for (const listener of staticListeners) {
       if (listeners.has(listener)) {
         await listener(eventData);
+      }
+    }
+
+    for (const listener of staticAnyListeners) {
+      if (anyListeners.has(listener)) {
+        await listener(eventName, eventData);
       }
     }
   }
@@ -145,5 +162,17 @@ export default class KEvents {
     }
 
     return count;
+  }
+
+  onAny(listener) {
+    assertListener(listener);
+    anyMap.get(this).add(listener);
+
+    return this.offAny.bind(this, listener);
+  }
+
+  offAny(listener) {
+    assertListener(listener);
+    anyMap.get(this).delete(listener);
   }
 }
