@@ -1,0 +1,38 @@
+{
+  "name": "k-events",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "Simple and modern async event emitter",
+  "keywords": [
+    "event",
+    "emitter",
+    "eventemitter",
+    "events",
+    "async",
+    "emit",
+    "on",
+    "once",
+    "off",
+    "listener",
+    "subscribe",
+    "unsubscribe",
+    "pubsub",
+    "tiny",
+    "addlistener",
+    "addeventlistener",
+    "dispatch",
+    "dispatcher",
+    "observer",
+    "trigger",
+    "await",
+    "promise",
+    "typescript",
+    "ts",
+    "typed"
+  ]
+}
