@@ -134,7 +134,7 @@ function iterator(instance, eventNames) {
   };
 }
 
-export default class KEvents {
+export default class kEvents {
   constructor() {
     eventsMap.set(this, new Map());
     anyMap.set(this, new Set());
